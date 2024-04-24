@@ -19,7 +19,7 @@ public class Event {
         this.bookedTickets = 0;
     }
 
-public Ticket bookTicket(String purchaserName, int NumberOfTickets) {
+public Ticket book(String purchaserName, int NumberOfTickets) {
     if (availableTickets() > NumberOfTickets) {
         int seatNumber = capacity - availableTickets() + 1;
         bookTickets(NumberOfTickets);
@@ -35,16 +35,14 @@ public Ticket bookTicket(String purchaserName, int NumberOfTickets) {
 
     @Override
     public String toString() {
-        return "Event{" +
-                "title:'" + title + '\'' +
+        return " title:'" + title + '\'' +
                 ", category:'" + category + '\'' +
                 ", description: '" + description + '\'' +
                 ", date: " + dateTime.toLocalDate() +
                 ", time: " + dateTime.toLocalTime() +
                 ", location: '" + location + '\'' +
                 ", capacity: " + capacity +
-                ", availableTickets: " + availableTickets() +
-                '}';
+                ", availableTickets: " + availableTickets();
     }
 
     // Admin methods to edit the event details
