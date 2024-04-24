@@ -19,10 +19,10 @@ public class Event {
         this.bookedTickets = 0;
     }
 
-public Ticket book(String purchaserName, int NumberOfTickets) {
+public Ticket book(String purchaserName) {
     if (availableTickets() > NumberOfTickets) {
         int seatNumber = capacity - availableTickets() + 1;
-        bookTickets(NumberOfTickets);
+        bookTickets(1); // To book only one eachTime (We shall find a way to book multi)
         return new Ticket(this, purchaserName, seatNumber);
     } else {
         return null; // No tickets available
@@ -46,27 +46,27 @@ public Ticket book(String purchaserName, int NumberOfTickets) {
     }
 
     // Admin methods to edit the event details
-    public void editTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public void editCategory(String category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
-    public void editDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void editDateTime(LocalDateTime dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public void editLocation(String location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
-    public void editCapacity(int capacity) {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 }
