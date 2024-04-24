@@ -19,10 +19,10 @@ public class Event {
         this.bookedTickets = 0;
     }
 
-public Ticket bookTicket(String purchaserName) {
-    if (availableTickets() > 0) {
+public Ticket bookTicket(String purchaserName, int NumberOfTickets) {
+    if (availableTickets() > NumberOfTickets) {
         int seatNumber = capacity - availableTickets() + 1;
-        bookTickets(1); // Book 1 ticket
+        bookTickets(NumberOfTickets);
         return new Ticket(this, purchaserName, seatNumber);
     } else {
         return null; // No tickets available
