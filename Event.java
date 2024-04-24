@@ -20,9 +20,9 @@ public class Event {
     }
 
     public boolean bookTickets(int numberOfTickets) {
-        if (numberOfTickets <= 0 || numberOfTickets > availableTickets()) {
+        if (numberOfTickets <= 0 || numberOfTickets > availableTickets()) 
             return false;
-        }
+        
         bookedTickets += numberOfTickets;
         return true;
     }
