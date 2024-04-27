@@ -21,7 +21,7 @@ public class AdminScene {
             System.out.println("4. Exit");
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline character
+            scanner.nextLine(); 
 
             switch (choice) {
                 case 1:
@@ -68,7 +68,7 @@ public class AdminScene {
         System.out.println("Edit Event");
         System.out.print("Enter the index of the event to edit: ");
         int index = scanner.nextInt();
-        scanner.nextLine(); // Consume newline character
+        scanner.nextLine(); 
 
         if (index >= 0 && index < events.size()) {
             Event event = events.get(index);
@@ -105,7 +105,7 @@ public class AdminScene {
         System.out.println("Delete Event");
         System.out.print("Enter the index of the event to delete: ");
         int index = scanner.nextInt();
-        scanner.nextLine(); // Consume newline character
+        scanner.nextLine(); 
 
         if (index >= 0 && index < events.size()) {
             events.remove(index);
