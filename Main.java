@@ -7,7 +7,7 @@ public class Main extends Application {
         AdminScene adminScene = new AdminScene(primaryStage);
         UserScene userScene = new UserScene(primaryStage);
 
-        // Switch between admin and user scenes as required
+        // Switch between admin and user scenes 
         primaryStage.show();
     }
 
