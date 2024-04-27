@@ -1,9 +1,17 @@
-public class Main {
-    public static void main(String[] args) {
-        AdminScene adminScene = new AdminScene();
-        UserScene userScene = new UserScene();
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-        adminScene.run(); 
-        userScene.run(); 
+public class Main extends Application {
+    @Override
+    public void start(Stage primaryStage) {
+        AdminScene adminScene = new AdminScene(primaryStage);
+        UserScene userScene = new UserScene(primaryStage);
+
+        // Switch between admin and user scenes as required
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
