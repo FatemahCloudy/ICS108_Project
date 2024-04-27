@@ -19,7 +19,7 @@ public class Event {
         this.bookedTickets = 0;
     }
 
-public Ticket book(String purchaserName) {
+public Ticket book(String purchaserName) { // for the user
     if (availableTickets() > NumberOfTickets) {
         int seatNumber = capacity - availableTickets() + 1;
         bookTickets(1); // To book only one eachTime (We shall find a way to book multi)
