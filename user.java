@@ -9,12 +9,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserScene {
     private Stage stage;
     private ListView<Event> eventListView;
-    private Label selectedEventLabel;
-    private Label availableSlotsLabel;
-    private Spinner<Integer> slotsSpinner;
+    private Label titleLabel;
+    private Label locationLabel;
+    private Label dateLabel;
+    private Label timeLabel;
+    private Label availableTicketsLabel;
+    private Spinner<Integer> ticketsSpinner;
     private Button bookButton;
 
     private ObservableList<Event> events;
@@ -42,11 +50,14 @@ public class UserScene {
         eventListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
                 displayEventDetails(newValue));
 
-        selectedEventLabel = new Label("Selected Event: None");
-        availableSlotsLabel = new Label("Available Slots: 0");
+        titleLabel = new Label();
+        locationLabel = new Label();
+        dateLabel = new Label();
+        timeLabel = new Label();
+        availableTicketsLabel = new Label();
 
-        Label slotsLabel = new Label("Number of Slots:");
-        slotsSpinner = new Spinner<>(1, 10, 1);
+        Label ticketsLabel = new Label("Number of Tickets:");
+        ticketsSpinner = new Spinner<>(1, 10, 1);
 
         bookButton = new Button("Book Tickets");
         bookButton.setOnAction(event -> bookTickets());
@@ -55,10 +66,13 @@ public class UserScene {
         formLayout.setHgap(10);
         formLayout.setVgap(10);
         formLayout.setAlignment(Pos.CENTER);
-        formLayout.addRow(0, selectedEventLabel);
-        formLayout.addRow(1, availableSlotsLabel);
-        formLayout.addRow(2, slotsLabel, slotsSpinner);
-        formLayout.addRow(3, bookButton);
+        formLayout.addRow(0, new Label("Title:"), titleLabel);
+        formLayout.addRow(1, new Label("Location:"), locationLabel);
+        formLayout.addRow(2, new Label("Date:"), dateLabel);
+        formLayout.addRow(3, new Label("Time:"), timeLabel);
+        formLayout.addRow(4, availableTicketsLabel);
+        formLayout.addRow(5, ticketsLabel, ticketsSpinner);
+        formLayout.addRow(6, bookButton);
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(10));
@@ -68,39 +82,59 @@ public class UserScene {
         stage.setScene(scene);
     }
 
-    public void setEvents(ObservableList<Event> events) {
-        this.events = events;
-        eventListView.setItems(events);
+    public void setEvents(List<Event> events) {
+        
+        List<Event> upcomingEvents = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
+
+        for (Event event : events) {
+            if (event.getDate().isAfter(currentDate)) {
+                upcomingEvents.add(event);
+            }
+        }
+
+        this.events = FXCollections.observableArrayList(upcomingEvents);
+        eventListView.setItems(this.events);
     }
 
     private void displayEventDetails(Event event) {
         if (event != null) {
-            selectedEventLabel.setText("Selected Event: " + event.getTitle());
-            availableSlotsLabel.setText("Available Slots: " + event.getAvailableSlots());
-            slotsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, event.getAvailableSlots(), 1));
+            titleLabel.setText(event.getTitle());
+            locationLabel.setText(event.getLocation());
+            dateLabel.setText(event.getDate().toString());
+            timeLabel.setText(event.getTime().toString());
+            availableTicketsLabel.setText("Available Tickets: " + event.getAvailableTickets());
+            ticketsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, event.getAvailableTickets(), 1));
         } else {
-            selectedEventLabel.setText("Selected Event: None");
-            availableSlotsLabel.setText("Available Slots: 0");
-            slotsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
+            titleLabel.setText("");
+            locationLabel.setText("");
+            dateLabel.setText("");
+            timeLabel.setText("");
+            availableTicketsLabel.setText("");
+            ticketsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
         }
     }
 
     private void bookTickets() {
         Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
-            int numSlots = slotsSpinner.getValue();
-            if (selectedEvent.getAvailableSlots() >= numSlots) {
-                
-                selectedEvent.bookTickets(numSlots);
-                availableSlotsLabel.setText("Available Slots: " + selectedEvent.getAvailableSlots());
+            int numTickets = ticketsSpinner.getValue();
+            if (selectedEvent.getDate().isAfter(LocalDate.now()) && selectedEvent.getAvailableTickets() >= numTickets) {
+              
+                selectedEvent.bookTickets(numTickets);
+                availableTicketsLabel.setText("Available Tickets: " + selectedEvent.getAvailableTickets());
 
-                System.out.println("Tickets booked for event: " + selectedEvent.getTitle() + " (" + numSlots + " slots)");
+                System.out.println("Tickets booked for event: " + selectedEvent.getTitle() + " (" + numTickets + " tickets)");
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("Not Enough Slots");
+                alert.setTitle("Invalid Booking");
                 alert.setHeaderText(null);
-                alert.setContentText("Not enough available slots for booking.");
-                alert.showAndWait();
+
+                if (selectedEvent.getDate().isBefore(LocalDate.now())) {
+                    alert.setContentText("You cannot book tickets for past events.");
+                } else {
+                    alert.setContentText("Not enough available tickets for booking.");
+                               alert.showAndWait();
             }
         }
     }
