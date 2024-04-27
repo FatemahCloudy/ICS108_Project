@@ -1,117 +1,162 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class AdminScene {
-    private List<Event> events;
-    private Scanner scanner;
+    private Stage stage;
+    private TextField titleField;
+    private TextField categoryField;
+    private TextArea descriptionArea;
+    private TextField dateField;
+    private TextField timeField;
+    private TextField locationField;
+    private TextField capacityField;
+    private Button addButton;
+    private Button editButton;
+    private Button deleteButton;
+    private ListView<Event> eventListView;
+    private Label statusLabel;
 
-    public AdminScene() {
-        events = new ArrayList<>();
-        scanner = new Scanner(System.in);
+    private ObservableList<Event> events;
+
+    public AdminScene(Stage stage) {
+        this.stage = stage;
+        events = FXCollections.observableArrayList();
+        initialize();
     }
 
-    public void run() {
-        boolean exit = false;
-        while (!exit) {
-            System.out.println("Admin Scene");
-            System.out.println("1. Add Event");
-            System.out.println("2. Edit Event");
-            System.out.println("3. Delete Event");
-            System.out.println("4. Exit");
-            System.out.print("Enter your choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine(); 
+    private void initialize() {
+        titleField = new TextField();
+        categoryField = new TextField();
+        descriptionArea = new TextArea();
+        dateField = new TextField();
+        timeField = new TextField();
+        locationField = new TextField();
+        capacityField = new TextField();
 
-            switch (choice) {
-                case 1:
-                    addEvent();
-                    break;
-                case 2:
-                    editEvent();
-                    break;
-                case 3:
-                    deleteEvent();
-                    break;
-                case 4:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+        addButton = new Button("Add Event");
+        addButton.setOnAction(event -> addEvent());
+
+        editButton = new Button("Edit Event");
+        editButton.setOnAction(event -> editEvent());
+
+        deleteButton = new Button("Delete Event");
+        deleteButton.setOnAction(event -> deleteEvent());
+
+        eventListView = new ListView<>();
+        eventListView.setItems(events);
+        eventListView.setCellFactory(param -> new ListCell<Event>() {
+            @Override
+            protected void updateItem(Event item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getTitle());
+                }
             }
-        }
+        });
+        eventListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                displayEventDetails(newValue));
+
+        statusLabel = new Label();
+
+        GridPane formLayout = new GridPane();
+        formLayout.setHgap(10);
+        formLayout.setVgap(10);
+        formLayout.addRow(0, new Label("Title:"), titleField);
+        formLayout.addRow(1, new Label("Category:"), categoryField);
+        formLayout.addRow(2, new Label("Description:"), descriptionArea);
+        formLayout.addRow(3, new Label("Date:"), dateField);
+        formLayout.addRow(4, new Label("Time:"), timeField);
+        formLayout.addRow(5, new Label("Location:"), locationField);
+        formLayout.addRow(6, new Label("Capacity:"), capacityField);
+
+        HBox buttonLayout = new HBox(10);
+        buttonLayout.getChildren().addAll(addButton, editButton, deleteButton);
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(formLayout, buttonLayout, eventListView, statusLabel);
+
+        Scene scene = new Scene(layout, 600, 400);
+        stage.setScene(scene);
     }
 
     private void addEvent() {
-        System.out.println("Add Event");
-        System.out.print("Enter title: ");
-        String title = scanner.nextLine();
-        System.out.print("Enter category: ");
-        String category = scanner.nextLine();
-        System.out.print("Enter description: ");
-        String description = scanner.nextLine();
-        System.out.print("Enter date: ");
-        String date = scanner.nextLine();
-        System.out.print("Enter time: ");
-        String time = scanner.nextLine();
-        System.out.print("Enter location: ");
-        String location = scanner.nextLine();
-        System.out.print("Enter capacity: ");
-        int capacity = scanner.nextInt();
+        String title = titleField.getText();
+        String category = categoryField.getText();
+        String description = descriptionArea.getText();
+        String date = dateField.getText();
+        String time = timeField.getText();
+        String location = locationField.getText();
+        int capacity = Integer.parseInt(capacityField.getText());
 
         Event event = new Event(title, category, description, date, time, location, capacity);
         events.add(event);
-        System.out.println("Event added successfully!");
+
+        clearFields();
+        statusLabel.setText("Event added: " + event.getTitle());
     }
 
     private void editEvent() {
-        System.out.println("Edit Event");
-        System.out.print("Enter the index of the event to edit: ");
-        int index = scanner.nextInt();
-        scanner.nextLine(); 
+        Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
+        if (selectedEvent != null) {
+            String newTitle = titleField.getText();
+            String newCategory = categoryField.getText();
+            String newDescription = descriptionArea.getText();
+            String newDate = dateField.getText();
+            String newTime = timeField.getText();
+            String newLocation = locationField.getText();
+            int newCapacity = Integer.parseInt(capacityField.getText());
 
-        if (index >= 0 && index < events.size()) {
-            Event event = events.get(index);
-            System.out.print("Enter new title (current: " + event.getTitle() + "): ");
-            String title = scanner.nextLine();
-            System.out.print("Enter new category (current: " + event.getCategory() + "): ");
-            String category = scanner.nextLine();
-            System.out.print("Enter new description (current: " + event.getDescription() + "): ");
-            String description = scanner.nextLine();
-            System.out.print("Enter new date (current: " + event.getDate() + "): ");
-            String date = scanner.nextLine();
-            System.out.print("Enter new time (current: " + event.getTime() + "): ");
-            String time = scanner.nextLine();
-            System.out.print("Enter new location (current: " + event.getLocation() + "): ");
-            String location = scanner.nextLine();
-            System.out.print("Enter new capacity (current: " + event.getCapacity() + "): ");
-            int capacity = scanner.nextInt();
+            selectedEvent.setTitle(newTitle);
+            selectedEvent.setCategory(newCategory);
+            selectedEvent.setDescription(newDescription);
+            selectedEvent.setDate(newDate);
+            selectedEvent.setTime(newTime);
+            selectedEvent.setLocation(newLocation);
+            selectedEvent.setCapacity(newCapacity);
 
-            event.setTitle(title);
-            event.setCategory(category);
-            event.setDescription(description);
-            event.setDate(date);
-            event.setTime(time);
-            event.setLocation(location);
-            event.setCapacity(capacity);
-
-            System.out.println("Event updated successfully!");
-        } else {
-            System.out.println("Invalid event index.");
+            clearFields();
+            statusLabel.setText("Event edited: " + selectedEvent.getTitle());
         }
     }
 
     private void deleteEvent() {
-        System.out.println("Delete Event");
-        System.out.print("Enter the index of the event to delete: ");
-        int index = scanner.nextInt();
-        scanner.nextLine(); 
-
-        if (index >= 0 && index < events.size()) {
-            events.remove(index);
-            System.out.println("Event deleted successfully!");
-        } else {
-            System.out.println("Invalid event index.");
+        Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
+        if (selectedEvent != null) {
+            events.remove(selectedEvent);
+            clearFields();
+            statusLabel.setText("Event deleted: " + selectedEvent.getTitle());
         }
+    }
+
+    private void displayEventDetails(Event event) {
+        if (event != null) {
+            titleField.setText(event.getTitle());
+            categoryField.setText(event.getCategory());
+            descriptionArea.setText(event.getDescription());
+            dateField.setText(event.getDate());
+            timeField.setText(event.getTime());
+            locationField.setText(event.getLocation());
+            capacityField.setText(String.valueOf(event.getCapacity()));
+        } else {
+            clearFields();
+        }
+    }
+
+    private void clearFields() {
+        titleField.clear();
+        categoryField.clear();
+        descriptionArea.clear();
+        dateField.clear();
+        timeField.clear();
+        locationField.clear();
+        capacityField.clear();
     }
 }
