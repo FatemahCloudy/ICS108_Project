@@ -1,11 +1,17 @@
+package com.example.ics108_project;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.text.ParseException;
+import java.util.Calendar;
 
 public class AdminScene {
     private Stage stage;
@@ -40,7 +46,11 @@ public class AdminScene {
         capacityField = new TextField();
 
         addButton = new Button("Add Event");
-        addButton.setOnAction(event -> addEvent());
+
+        addButton.setOnAction(event -> {try {addEvent();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }});
 
         editButton = new Button("Edit Event");
         editButton.setOnAction(event -> editEvent());
@@ -87,13 +97,13 @@ public class AdminScene {
         stage.setScene(scene);
     }
 
-    private void addEvent() {
+    private void addEvent() throws ParseException {
         String title = titleField.getText();
         String category = categoryField.getText();
         String description = descriptionArea.getText();
-        String date = dateField.getText();
-        String time = timeField.getText();
         String location = locationField.getText();
+        String time = timeField.getText();
+        String date = dateField.getText();
         int capacity = Integer.parseInt(capacityField.getText());
 
         Event event = new Event(title, category, description, date, time, location, capacity);
