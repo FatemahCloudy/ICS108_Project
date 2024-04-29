@@ -1,32 +1,35 @@
-import java.time.LocalDateTime;
-
+package com.example.ics108_project;
+//ToDo: show a message for the user if he tried to book tickets more than available
 public class Event {
     private String title;
     private String category;
     private String description;
-    private LocalDateTime dateTime;
+    private String date;
+    private String time;
     private String location;
     private int capacity;
     private int bookedTickets;
 
-    public Event(String title, String category, String description, LocalDateTime dateTime, String location, int capacity) {
+    public Event(String title, String category, String description, String date, String time, String location, int capacity) {
         this.title = title;
         this.category = category;
         this.description = description;
-        this.dateTime = dateTime;
+        this.date = date;
+        this.time = time;
         this.location = location;
         this.capacity = capacity;
         this.bookedTickets = 0;
     }
 
+public void bookTickets(int numberOfTickets) {bookedTickets+= numberOfTickets;}
+
 public Ticket book(String purchaserName) { // for the user
-    if (availableTickets() > NumberOfTickets) {
+    if (availableTickets() > 1) {
         int seatNumber = capacity - availableTickets() + 1;
-        bookTickets(1); // To book only one eachTime (We shall find a way to book multi)
+        bookTickets(1);
         return new Ticket(this, purchaserName, seatNumber);
-    } else {
-        return null; // No tickets available
-    }
+
+    } else {return null;} // No tickets available
 }
 
     public int availableTickets() {
@@ -38,8 +41,8 @@ public Ticket book(String purchaserName) { // for the user
         return " title:'" + title + '\'' +
                 ", category:'" + category + '\'' +
                 ", description: '" + description + '\'' +
-                ", date: " + dateTime.toLocalDate() +
-                ", time: " + dateTime.toLocalTime() +
+                ", date: " + date +
+                ", time: " + time +
                 ", location: '" + location + '\'' +
                 ", capacity: " + capacity +
                 ", availableTickets: " + availableTickets();
@@ -58,9 +61,9 @@ public Ticket book(String purchaserName) { // for the user
         this.description = description;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
+    public void setDate(String date) {this.date = date;}
+
+    public void setTime(String time) {this.time = time;}
 
     public void setLocation(String location) {
         this.location = location;
@@ -69,4 +72,15 @@ public Ticket book(String purchaserName) { // for the user
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
+
+    // getters
+    public String getTitle() {return title;}
+    public String getDate() {return date;}
+    public String getTime() {return time;}
+    public int getCapacity() {return capacity;}
+    public String getCategory() {return category;}
+    public String getDescription() {return description;}
+    public String getLocation() {return location;}
+    public int getBookedTickets() {return bookedTickets;}
+    public int getAvailableTickets() {return capacity - bookedTickets;}
 }
