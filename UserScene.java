@@ -1,72 +1,44 @@
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+package com.example.ics108_project;
+
+import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class UserScene {
+public class Main extends Application {
     private Stage stage;
-    private ListView<Event> eventListView;
-    private TextField ticketQuantityField;
-    private Button bookButton;
-    private Label statusLabel;
+    private Scene adminScene;
+    private Scene userScene;
 
-    private ObservableList<Event> events;
+    @Override
+    public void start(Stage primaryStage) {
+        this.stage = primaryStage;
+        AdminScene adminSceneUI = new AdminScene(primaryStage);
+        UserScene userSceneUI = new UserScene(primaryStage);
 
-    public UserScene(Stage stage, ObservableList<Event> events) {
-        this.stage = stage;
-        this.events = events;
-        initialize();
+        // Assuming these methods return the Scene objects for each UI
+
+        Button switchToUserScene = new Button("Switch to User Scene");
+        switchToUserScene.setOnAction(e -> stage.setScene(userScene));
+
+        Button switchToAdminScene = new Button("Switch to Admin Scene");
+        switchToAdminScene.setOnAction(e -> stage.setScene(adminScene));
+
+        StackPane adminLayout = new StackPane();
+        adminLayout.getChildren().add(switchToUserScene);
+        adminScene = new Scene(adminLayout, 600, 400);
+
+        StackPane userLayout = new StackPane();
+        userLayout.getChildren().add(switchToAdminScene);
+        userScene = new Scene(userLayout, 600, 400);
+
+        primaryStage.setScene(adminScene);
+        primaryStage.setTitle("Event Booking System");
+        primaryStage.show();
     }
 
-    private void initialize() {
-        eventListView = new ListView<>();
-        eventListView.setItems(events);
-        eventListView.setCellFactory(param -> new ListCell<Event>() {
-            @Override
-            protected void updateItem(Event item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getTitle() + " - " + item.getDate());
-                }
-            }
-        });
-
-        ticketQuantityField = new TextField();
-        ticketQuantityField.setPromptText("Enter quantity");
-
-        bookButton = new Button("Book Tickets");
-        bookButton.setOnAction(event -> bookTickets());
-
-        statusLabel = new Label();
-
-        GridPane formLayout = new GridPane();
-        formLayout.setHgap(10);
-        formLayout.setVgap(10);
-        formLayout.addRow(0, new Label("Ticket Quantity:"), ticketQuantityField);
-
-        HBox buttonLayout = new HBox(10);
-        buttonLayout.getChildren().add(bookButton);
-
-        VBox layout = new VBox(10);
-        layout.getChildren().addAll(eventListView, formLayout, buttonLayout, statusLabel);
-
-        Scene scene = new Scene(layout, 600, 400);
-        stage.setScene(scene);
-    }
-
-    private void bookTickets() {
-        Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            int quantity = Integer.parseInt(ticketQuantityField.getText());
-            // Logic to book the tickets for the selected event
-            // Update the event's capacity
-            // Show booking status in the statusLabel
-        }
+    public static void main(String[] args) {
+        launch(args);
     }
 }
