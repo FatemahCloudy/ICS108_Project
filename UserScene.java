@@ -37,6 +37,7 @@ public class UserScene {
     }
 
     private void initialize() {
+        // Show the events for the user to choose and book tickets
         eventListView = new ListView<>();
         eventListView.setItems(events);
         eventListView.setCellFactory(param -> new ListCell<Event>() {
@@ -50,7 +51,8 @@ public class UserScene {
                 }
             }
         });
-        eventListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+        eventListView.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) ->
                 displayEventDetails(newValue));
 
         titleLabel = new Label();
@@ -59,9 +61,11 @@ public class UserScene {
         timeLabel = new Label();
         availableTicketsLabel = new Label();
 
+        // let the user choose how many tickets they want to book
         Label ticketsLabel = new Label("Number of Tickets:");
         ticketsSpinner = new Spinner<>(1, 10, 1);
 
+        // the user press this button to book, then, they get a message (Success or failed)
         bookButton = new Button("Book Tickets");
         bookButton.setOnAction(event -> {
             Ticket bookedTicket = bookTickets();
@@ -82,7 +86,7 @@ public class UserScene {
             }
         });
 
-
+        // organize everything in the layout
         GridPane formLayout = new GridPane();
         formLayout.setHgap(10);
         formLayout.setVgap(10);
@@ -105,6 +109,7 @@ public class UserScene {
 
     public void setEvents(List<Event> events) {
 
+        // upcoming events that user can book
         List<Event> upcomingEvents = new ArrayList<>();
         Calendar currentDate = Calendar.getInstance();
         String today = String.valueOf(currentDate);
@@ -118,7 +123,7 @@ public class UserScene {
         this.events = FXCollections.observableArrayList(upcomingEvents);
         eventListView.setItems(this.events);
     }
-
+    // display event details
     private void displayEventDetails(Event event) {
         if (event != null) {
             titleLabel.setText(event.getTitle());
@@ -136,7 +141,7 @@ public class UserScene {
             ticketsSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1, 1));
         }
     }
-
+    // the user can only book upcoming events, past events cannot be booked
     private Ticket bookTickets() {
         LocalDate currentDate = LocalDate.now();
         Date today = new Date(String.valueOf(currentDate));
@@ -144,13 +149,15 @@ public class UserScene {
         Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
             int numTickets = ticketsSpinner.getValue();
-            if (selectedEvent.getDate().after(today.toString()) && selectedEvent.getAvailableTickets() >= numTickets) {
+
+            if (selectedEvent.getDate().after(today.toString())
+                    && selectedEvent.getAvailableTickets() >= numTickets) {
 
                 selectedEvent.bookTickets(numTickets);
                 availableTicketsLabel.setText("Available Tickets: " + selectedEvent.getAvailableTickets());
                 System.out.println("Tickets booked for event: " + selectedEvent.getTitle() + " (" + numTickets + " tickets)");
 
-            } else {
+            } else { // the user cannot book some events (past events or no available tickets)
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Invalid Booking");
                 alert.setHeaderText(null);
