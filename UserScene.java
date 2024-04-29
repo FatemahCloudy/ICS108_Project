@@ -63,7 +63,25 @@ public class UserScene {
         ticketsSpinner = new Spinner<>(1, 10, 1);
 
         bookButton = new Button("Book Tickets");
-        bookButton.setOnAction(event -> bookTickets());
+        bookButton.setOnAction(event -> {
+            Ticket bookedTicket = bookTickets();
+            if (bookedTicket != null) {
+                // Display success alert
+                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                successAlert.setTitle("Ticket Booking");
+                successAlert.setHeaderText(null);
+                successAlert.setContentText("Ticket booked successfully!");
+                successAlert.showAndWait();
+            } else {
+                // Display error alert
+                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                errorAlert.setTitle("Ticket Booking");
+                errorAlert.setHeaderText(null);
+                errorAlert.setContentText("No available tickets.");
+                errorAlert.showAndWait();
+            }
+        });
+
 
         GridPane formLayout = new GridPane();
         formLayout.setHgap(10);
@@ -119,7 +137,7 @@ public class UserScene {
         }
     }
 
-    private void bookTickets() {
+    private Ticket bookTickets() {
         LocalDate currentDate = LocalDate.now();
         Date today = new Date(String.valueOf(currentDate));
 
@@ -145,5 +163,6 @@ public class UserScene {
                 }
             }
         }
+        return null;
     }
 }
