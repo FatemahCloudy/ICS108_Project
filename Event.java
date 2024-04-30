@@ -1,28 +1,28 @@
 package com.example.ics108_project;
-//ToDo: show a message for the user if he tried to book tickets more than available (Done!)
+
+import java.time.LocalDateTime;
+
 public class Event {
     private String title;
     private String category;
     private String description;
-    private String date;
-    private String time;
+    LocalDateTime dateTime;
     private String location;
     private int capacity;
     private int bookedTickets;
-
-    public Event(String title, String category, String description, String date, String time, String location, int capacity) {
+    //ToDo: edit the date type
+    public Event(String title, String category, String description, LocalDateTime dateTime, String location, int capacity) {
         this.title = title;
         this.category = category;
         this.description = description;
-        this.date = date;
-        this.time = time;
+        this.dateTime = dateTime;
         this.location = location;
         this.capacity = capacity;
         this.bookedTickets = 0;
     }
     // Did the user just booked some tickets? Increment the number of booked tickets
     public void bookTickets(int numberOfTickets) {bookedTickets+= numberOfTickets;}
-    
+
     // A useful method to see if there is enough tickets to book or no
     public int availableTickets() {return capacity - bookedTickets;}
 
@@ -32,7 +32,7 @@ public class Event {
             int seatNumber = capacity - availableTickets() + 1;
             bookTickets(1);
             return new Ticket(this, purchaserName, seatNumber);
-    
+
         } else {return null;} // No tickets available
     }
 
@@ -41,8 +41,8 @@ public class Event {
         return " title:'" + title + '\'' +
                 ", category:'" + category + '\'' +
                 ", description: '" + description + '\'' +
-                ", date: " + date +
-                ", time: " + time +
+                ", date: " + dateTime.toLocalDate() +
+                ", time: " + dateTime.toLocalTime() +
                 ", location: '" + location + '\'' +
                 ", capacity: " + capacity +
                 ", availableTickets: " + availableTickets();
@@ -55,9 +55,7 @@ public class Event {
 
     public void setDescription(String description) {this.description = description;}
 
-    public void setDate(String date) {this.date = date;}
-
-    public void setTime(String time) {this.time = time;}
+    public void setDateTime(LocalDateTime dateTime) {this.dateTime = dateTime;}
 
     public void setLocation(String location) {this.location = location;}
 
@@ -65,20 +63,18 @@ public class Event {
 
     // getters for everything. To be used across classes
     public String getTitle() {return title;}
-    
-    public String getDate() {return date;}
-    
-    public String getTime() {return time;}
-    
+
+    public LocalDateTime getDateTime() {return dateTime;}
+
     public int getCapacity() {return capacity;}
-    
+
     public String getCategory() {return category;}
-    
+
     public String getDescription() {return description;}
-    
+
     public String getLocation() {return location;}
-    
+
     public int getBookedTickets() {return bookedTickets;}
-    
+
     public int getAvailableTickets() {return capacity - bookedTickets;}
 }
