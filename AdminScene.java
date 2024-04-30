@@ -169,4 +169,5 @@ public class AdminScene {
         locationField.clear();
         capacityField.clear();
     }
+    public Scene getScene() {return stage.getScene();}
 }
