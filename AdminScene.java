@@ -2,7 +2,6 @@ package com.example.ics108_project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -11,20 +10,19 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.text.ParseException;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class AdminScene {
     private Stage stage;
     private TextField titleField;
     private TextField categoryField;
     private TextArea descriptionArea;
-    private TextField dateField;
+    private DatePicker datePicker;
     private TextField timeField;
     private TextField locationField;
     private TextField capacityField;
-    private Button addButton;
-    private Button editButton;
-    private Button deleteButton;
     private ListView<Event> eventListView;
     private Label statusLabel;
 
@@ -40,27 +38,29 @@ public class AdminScene {
         titleField = new TextField();
         categoryField = new TextField();
         descriptionArea = new TextArea();
-        dateField = new TextField();
+        datePicker = new DatePicker();
         timeField = new TextField();
         locationField = new TextField();
         capacityField = new TextField();
 
-        addButton = new Button("Add Event");
+        Button addButton = new Button("Add Event");
+        addButton.setOnAction(event -> {
+            try {
+                addEvent();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        addButton.setOnAction(event -> {try {addEvent();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }});
-
-        editButton = new Button("Edit Event");
+        Button editButton = new Button("Edit Event");
         editButton.setOnAction(event -> editEvent());
 
-        deleteButton = new Button("Delete Event");
+        Button deleteButton = new Button("Delete Event");
         deleteButton.setOnAction(event -> deleteEvent());
 
         eventListView = new ListView<>();
         eventListView.setItems(events);
-        eventListView.setCellFactory(param -> new ListCell<Event>() {
+        eventListView.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(Event item, boolean empty) {
                 super.updateItem(item, empty);
@@ -82,7 +82,7 @@ public class AdminScene {
         formLayout.addRow(0, new Label("Title:"), titleField);
         formLayout.addRow(1, new Label("Category:"), categoryField);
         formLayout.addRow(2, new Label("Description:"), descriptionArea);
-        formLayout.addRow(3, new Label("Date:"), dateField);
+        formLayout.addRow(3, new Label("Date:"), datePicker);
         formLayout.addRow(4, new Label("Time:"), timeField);
         formLayout.addRow(5, new Label("Location:"), locationField);
         formLayout.addRow(6, new Label("Capacity:"), capacityField);
@@ -101,12 +101,11 @@ public class AdminScene {
         String title = titleField.getText();
         String category = categoryField.getText();
         String description = descriptionArea.getText();
+        LocalDateTime dateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
         String location = locationField.getText();
-        String time = timeField.getText();
-        String date = dateField.getText();
         int capacity = Integer.parseInt(capacityField.getText());
 
-        Event event = new Event(title, category, description, date, time, location, capacity);
+        Event event = new Event(title, category, description, dateTime, location, capacity);
         events.add(event);
 
         clearFields();
@@ -119,16 +118,14 @@ public class AdminScene {
             String newTitle = titleField.getText();
             String newCategory = categoryField.getText();
             String newDescription = descriptionArea.getText();
-            String newDate = dateField.getText();
-            String newTime = timeField.getText();
+            LocalDateTime newDateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
             String newLocation = locationField.getText();
             int newCapacity = Integer.parseInt(capacityField.getText());
 
             selectedEvent.setTitle(newTitle);
             selectedEvent.setCategory(newCategory);
             selectedEvent.setDescription(newDescription);
-            selectedEvent.setDate(newDate);
-            selectedEvent.setTime(newTime);
+            selectedEvent.setDateTime(newDateTime);
             selectedEvent.setLocation(newLocation);
             selectedEvent.setCapacity(newCapacity);
 
@@ -151,8 +148,8 @@ public class AdminScene {
             titleField.setText(event.getTitle());
             categoryField.setText(event.getCategory());
             descriptionArea.setText(event.getDescription());
-            dateField.setText(event.getDate());
-            timeField.setText(event.getTime());
+            datePicker.setValue(event.getDateTime().toLocalDate());
+            timeField.setText(event.getDateTime().toLocalTime().toString());
             locationField.setText(event.getLocation());
             capacityField.setText(String.valueOf(event.getCapacity()));
         } else {
@@ -164,10 +161,16 @@ public class AdminScene {
         titleField.clear();
         categoryField.clear();
         descriptionArea.clear();
-        dateField.clear();
+        datePicker.setValue(null);
         timeField.clear();
         locationField.clear();
         capacityField.clear();
     }
+
+    private LocalTime parseTime(String time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(time, formatter);
+    }
+
     public Scene getScene() {return stage.getScene();}
 }
