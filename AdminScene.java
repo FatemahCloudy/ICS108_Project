@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+import static javafx.application.Application.launch;
+
 public class AdminScene {
     private Stage stage;
     private TextField titleField;
@@ -95,6 +97,7 @@ public class AdminScene {
 
         Scene scene = new Scene(layout, 600, 400);
         stage.setScene(scene);
+        stage.show();
     }
 
     private void addEvent() throws ParseException {
@@ -172,5 +175,7 @@ public class AdminScene {
         return LocalTime.parse(time, formatter);
     }
 
-    public Scene getScene() {return stage.getScene();}
+    public Scene getScene() {return this.stage.getScene();}
 }
+
+
