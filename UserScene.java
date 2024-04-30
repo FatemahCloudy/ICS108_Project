@@ -2,22 +2,23 @@ package com.example.ics108_project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 // ... other imports ...
 
-public class AdminScene {
+public class UserScene {
     private Stage stage;
-    private Scene adminScene; // The Scene for this view
+    private Scene userScene; // The Scene for this view
     // ... other fields ...
 
     // Constructor remains the same
-    public AdminScene(Stage stage) {
+    public UserScene(Stage stage) {
         this.stage = stage;
         events = FXCollections.observableArrayList();
         initialize();
@@ -28,14 +29,14 @@ public class AdminScene {
         // ... field initializations and layout setup ...
 
         // Instead of showing the stage, simply create the Scene and assign it
-        adminScene = new Scene(layout, 600, 400);
+        userScene = new Scene(layout, 400, 300);
     }
 
-    // ... other methods ...
+    // ... other methods including setEvents, displayEventDetails, bookTickets ...
 
-    // Method to get the Scene object for this AdminScene
-    public Scene getAdminScene() {
-        return adminScene;
+    // Method to get the Scene object for this UserScene
+    public Scene getUserScene() {
+        return userScene;
     }
 
     // ... rest of the class code ...
