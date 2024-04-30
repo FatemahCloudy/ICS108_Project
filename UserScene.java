@@ -36,7 +36,6 @@ public class UserScene {
     }
 
     private void initialize() {
-        // Show the events for the user to choose and book tickets
         eventListView = new ListView<>();
         eventListView.setItems(events);
         eventListView.setCellFactory(param -> new ListCell<>() {
@@ -60,34 +59,13 @@ public class UserScene {
         timeLabel = new Label();
         availableTicketsLabel = new Label();
 
-        // let the user choose how many tickets they want to book
         Label ticketsLabel = new Label("Number of Tickets:");
         ticketsSpinner = new Spinner<>(1, 10, 1);
         nameField = new TextField();
         purchaserName = nameField.getText();
 
-        // the user press this button to book, then, they get a message (Success or failed)
         Button bookButton = new Button("Book Tickets");
-        bookButton.setOnAction(event -> {
-            Ticket bookedTicket = bookTickets();
-            if (bookedTicket != null) {
-                // Display success alert
-                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                successAlert.setTitle("Ticket Booking");
-                successAlert.setHeaderText(null);
-                successAlert.setContentText("Ticket booked successfully!");
-                successAlert.showAndWait();
-            } else {
-                // Display error alert
-                Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-                errorAlert.setTitle("Ticket Booking");
-                errorAlert.setHeaderText(null);
-                errorAlert.setContentText("No available tickets.");
-                errorAlert.showAndWait();
-            }
-        });
-
-        // organize everything in the layout
+        bookButton.setOnAction(event -> {Ticket bookedTicket = bookTickets();});
         GridPane formLayout = new GridPane();
         formLayout.setHgap(10);
         formLayout.setVgap(10);
@@ -106,6 +84,7 @@ public class UserScene {
 
         Scene scene = new Scene(layout, 400, 300);
         stage.setScene(scene);
+        stage.show();
     }
 
     public void setEvents(List<Event> events) {
@@ -206,6 +185,6 @@ public class UserScene {
         }
         return null;
     }
-        public Scene getScene() {return stage.getScene();}
+        public Scene getScene() {return this.stage.getScene();}
 }
 
