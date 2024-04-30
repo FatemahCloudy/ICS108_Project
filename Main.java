@@ -13,11 +13,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        this.stage = primaryStage;
-        AdminScene adminSceneUI = new AdminScene(this.stage);
-        UserScene userSceneUI = new UserScene(this.stage);
 
-        // Assuming these methods return the Scene objects for each UI
+        this.stage = primaryStage;
+
+        AdminScene adminSceneUI = new AdminScene(primaryStage);
+        UserScene userSceneUI = new UserScene(primaryStage);
+
         adminScene = adminSceneUI.getScene();
         userScene = userSceneUI.getScene();
 
@@ -29,13 +30,13 @@ public class Main extends Application {
 
         StackPane adminLayout = new StackPane();
         adminLayout.getChildren().add(switchToUserScene);
-        adminScene.setRoot(adminLayout);
+        adminScene = new Scene(adminLayout, 600, 400);
 
         StackPane userLayout = new StackPane();
         userLayout.getChildren().add(switchToAdminScene);
-        userScene.setRoot(userLayout);
+        userScene = new Scene(userLayout, 600, 400);
 
-        // Switch between admin and user scenes
+        // Switch between admin and user scenes 
         primaryStage.setScene(adminScene);
         primaryStage.setTitle("Event Booking System");
         primaryStage.show();
