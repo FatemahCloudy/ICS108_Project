@@ -2,6 +2,8 @@ package com.example.ics108_project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -9,12 +11,10 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import static javafx.application.Application.launch;
 
 public class AdminScene {
     private Stage stage;
@@ -28,6 +28,7 @@ public class AdminScene {
     private TextField capacityField;
     private ListView<Event> eventListView;
     private Label statusLabel;
+    Button addButton, editButton, deleteButton;
 
     private ObservableList<Event> events;
 
@@ -46,20 +47,14 @@ public class AdminScene {
         locationField = new TextField();
         capacityField = new TextField();
 
-        Button addButton = new Button("Add Event");
-        addButton.setOnAction(event -> {
-            try {
-                addEvent();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        addButton = new Button("Add Event");
+        addButton.setOnAction(new AddButtonHandler());
 
-        Button editButton = new Button("Edit Event");
-        editButton.setOnAction(event -> editEvent());
+        editButton = new Button("Edit Event");
+        editButton.setOnAction(new EditButtonHandler());
 
-        Button deleteButton = new Button("Delete Event");
-        deleteButton.setOnAction(event -> deleteEvent());
+        deleteButton = new Button("Delete Event");
+        deleteButton.setOnAction(new DeleteButtonHandler());
 
         eventListView = new ListView<>();
         eventListView.setItems(events);
@@ -95,57 +90,10 @@ public class AdminScene {
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(formLayout, buttonLayout, eventListView, statusLabel);
-        
 
         Scene scene = new Scene(layout, 600, 400);
         stage.setScene(scene);
-        adminScene = new Scene(layout, 600, 400);
-    }
-
-    private void addEvent() throws ParseException {
-        String title = titleField.getText();
-        String category = categoryField.getText();
-        String description = descriptionArea.getText();
-        LocalDateTime dateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
-        String location = locationField.getText();
-        int capacity = Integer.parseInt(capacityField.getText());
-
-        Event event = new Event(title, category, description, dateTime, location, capacity);
-        events.add(event);
-
-        clearFields();
-        statusLabel.setText("Event added: " + event.getTitle());
-    }
-
-    private void editEvent() {
-        Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            String newTitle = titleField.getText();
-            String newCategory = categoryField.getText();
-            String newDescription = descriptionArea.getText();
-            LocalDateTime newDateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
-            String newLocation = locationField.getText();
-            int newCapacity = Integer.parseInt(capacityField.getText());
-
-            selectedEvent.setTitle(newTitle);
-            selectedEvent.setCategory(newCategory);
-            selectedEvent.setDescription(newDescription);
-            selectedEvent.setDateTime(newDateTime);
-            selectedEvent.setLocation(newLocation);
-            selectedEvent.setCapacity(newCapacity);
-
-            clearFields();
-            statusLabel.setText("Event edited: " + selectedEvent.getTitle());
-        }
-    }
-
-    private void deleteEvent() {
-        Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-        if (selectedEvent != null) {
-            events.remove(selectedEvent);
-            clearFields();
-            statusLabel.setText("Event deleted: " + selectedEvent.getTitle());
-        }
+        adminScene = scene;
     }
 
     private void displayEventDetails(Event event) {
@@ -178,9 +126,62 @@ public class AdminScene {
     }
 
     public Scene getAdminScene() {return adminScene;}
+
+    class DeleteButtonHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent e) {
+            if (e.getSource() == deleteButton) {
+                Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
+                if (selectedEvent != null) {
+                    events.remove(selectedEvent);
+                    clearFields();
+                    statusLabel.setText("Event deleted: " + selectedEvent.getTitle());
+                }
+            }
+        }
+    }
+    class AddButtonHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent e) {
+            if (e.getSource() == addButton) {
+                String title = titleField.getText();
+                String category = categoryField.getText();
+                String description = descriptionArea.getText();
+                LocalDateTime dateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
+                String location = locationField.getText();
+                int capacity = Integer.parseInt(capacityField.getText());
+
+                Event event = new Event(title, category, description, dateTime, location, capacity);
+                events.add(event);
+
+                clearFields();
+                statusLabel.setText("Event added: " + event.getTitle());
+            }
+        }
+    }
+
+    class EditButtonHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent e) {
+            Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
+            if (selectedEvent != null) {
+                String newTitle = titleField.getText();
+                String newCategory = categoryField.getText();
+                String newDescription = descriptionArea.getText();
+                LocalDateTime newDateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
+                String newLocation = locationField.getText();
+                int newCapacity = Integer.parseInt(capacityField.getText());
+
+                selectedEvent.setTitle(newTitle);
+                selectedEvent.setCategory(newCategory);
+                selectedEvent.setDescription(newDescription);
+                selectedEvent.setDateTime(newDateTime);
+                selectedEvent.setLocation(newLocation);
+                selectedEvent.setCapacity(newCapacity);
+
+                clearFields();
+                statusLabel.setText("Event edited: " + selectedEvent.getTitle());
+            }
+        }
+    }
 }
-
-
-
-
-
