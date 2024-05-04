@@ -2,6 +2,8 @@ package com.example.ics108_project;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,11 +12,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-// ToDo: let the user view the tickets after being booked successfully
 public class UserScene {
     private Stage stage;
     private Scene userScene;
@@ -27,6 +31,7 @@ public class UserScene {
     private Spinner<Integer> ticketsSpinner;
     private TextField nameField;
     private String purchaserName;
+    Button bookButton;
 
     private ObservableList<Event> events;
 
@@ -65,8 +70,10 @@ public class UserScene {
         nameField = new TextField();
         purchaserName = nameField.getText();
 
-        Button bookButton = new Button("Book Tickets");
-        bookButton.setOnAction(event -> {Ticket bookedTicket = bookTickets();});
+        // Booking Button
+        bookButton = new Button("Book Tickets");
+        bookButton.setOnAction(new BookButtonHandler());
+
         GridPane formLayout = new GridPane();
         formLayout.setHgap(10);
         formLayout.setVgap(10);
@@ -87,7 +94,7 @@ public class UserScene {
         stage.setScene(scene);
         userScene = new Scene(layout, 400, 300);
     }
-
+    //ToDo: this is unused, why?
     public void setEvents(List<Event> events) {
         // upcoming events that user can book
         List<Event> upcomingEvents = new ArrayList<>();
@@ -142,8 +149,8 @@ public class UserScene {
         // Display the dialog stage
         dialogStage.show();
     }
+
     // the user can only book upcoming events, past events cannot be booked
-// the user can only book upcoming events, past events cannot be booked
     private Ticket bookTickets() {
         Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
         if (selectedEvent != null) {
@@ -187,5 +194,20 @@ public class UserScene {
         return null;
     }
         public Scene getUserScene() {return userScene;}
-}
 
+    class BookButtonHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent e) {
+            Ticket bookedTicket = bookTickets();
+            String file = "tickets.txt";
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                if (bookedTicket != null) {
+                    writer.write(bookedTicket.toString());
+                }
+            } catch (IOException except) {
+                System.err.format("IOException: %s%n", except);
+            }
+        }
+    }
+}
