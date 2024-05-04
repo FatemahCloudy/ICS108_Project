@@ -1,6 +1,7 @@
 package com.example.ics108_project;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,12 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.event.EventHandler;
 
 public class Main extends Application {
 
-    private Stage primaryStage;
-    private AdminScene adminScene;
-    private UserScene userScene;
+    Stage primaryStage;
+    AdminScene adminScene;
+    UserScene userScene;
+    Button switchToUserButton, switchToAdminButton;
 
     @Override
     public void start(Stage primaryStage) {
@@ -28,12 +31,12 @@ public class Main extends Application {
         primaryStage.setTitle("Event Booking");
 
         // Create a button to switch to the admin scene
-        Button switchToAdminButton = new Button("Switch to Admin");
-        switchToAdminButton.setOnAction(event -> switchToAdminScene());
+        switchToAdminButton = new Button("Switch to Admin");
+        switchToAdminButton.setOnAction(new SwitchHandler());
 
         // Create a button to switch to the user scene
-        Button switchToUserButton = new Button("Switch to User");
-        switchToUserButton.setOnAction(event -> switchToUserScene());
+        switchToUserButton = new Button("Switch to User");
+        switchToUserButton.setOnAction(new SwitchHandler());
 
         // Create a layout for the buttons
         HBox buttonLayout = new HBox(10);
@@ -53,19 +56,19 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    // Method to switch to AdminScene
-    public void switchToAdminScene() {
-        primaryStage.setScene(adminScene.getAdminScene());
-        primaryStage.setTitle("Event Management");
-    }
+    public static void main(String[] args) {launch(args);}
 
-    // Method to switch to UserScene
-    public void switchToUserScene() {
-        primaryStage.setScene(userScene.getUserScene());
-        primaryStage.setTitle("Event Booking");
-    }
+    class SwitchHandler implements EventHandler<ActionEvent> {
+        @Override
+        public void handle(ActionEvent event) {
+            if (event.getSource() == switchToUserButton) {
+                primaryStage.setScene(userScene.getUserScene());
+                primaryStage.setTitle("Event Booking");
+            } else if (event.getSource() == switchToAdminButton) {
+                primaryStage.setScene(adminScene.getAdminScene());
+                primaryStage.setTitle("Event Management");
+            }
 
-    public static void main(String[] args) {
-        launch(args);
+        }
     }
 }
