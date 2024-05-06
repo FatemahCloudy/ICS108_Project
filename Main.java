@@ -17,6 +17,8 @@ public class Main extends Application {
     AdminScene adminScene;
     UserScene userScene;
     Button switchToUserButton, switchToAdminButton;
+    HBox buttonLayout;
+    VBox layout;
 
     @Override
     public void start(Stage primaryStage) {
@@ -27,7 +29,7 @@ public class Main extends Application {
         userScene = new UserScene(primaryStage);
 
         // Set initial scene (user scene)
-        primaryStage.setScene(userScene.getUserScene());
+        primaryStage.setScene(userScene.getScene());
         primaryStage.setTitle("Event Booking");
 
         // Create a button to switch to the admin scene
@@ -39,16 +41,16 @@ public class Main extends Application {
         switchToUserButton.setOnAction(new SwitchHandler());
 
         // Create a layout for the buttons
-        HBox buttonLayout = new HBox(10);
+        buttonLayout = new HBox(10);
         buttonLayout.getChildren().addAll(switchToAdminButton, switchToUserButton);
         buttonLayout.setAlignment(Pos.CENTER);
 
         // Create a layout for the main content
-        VBox layout = new VBox(10);
+        layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(buttonLayout);
 
-        // Create the main scene
+        // Create the main scene and set the layout as the root
         Scene mainScene = new Scene(layout, 400, 300);
         primaryStage.setScene(mainScene);
 
@@ -62,10 +64,10 @@ public class Main extends Application {
         @Override
         public void handle(ActionEvent event) {
             if (event.getSource() == switchToUserButton) {
-                primaryStage.setScene(userScene.getUserScene());
+                primaryStage.setScene(userScene.getScene());
                 primaryStage.setTitle("Event Booking");
             } else if (event.getSource() == switchToAdminButton) {
-                primaryStage.setScene(adminScene.getAdminScene());
+                primaryStage.setScene(adminScene.getScene());
                 primaryStage.setTitle("Event Management");
             }
 
