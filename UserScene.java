@@ -16,12 +16,10 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserScene {
     private Stage stage;
-    private Scene userScene;
+    private Scene scene;
     private ListView<Event> eventListView;
     private Label titleLabel;
     private Label locationLabel;
@@ -31,6 +29,9 @@ public class UserScene {
     private Spinner<Integer> ticketsSpinner;
     private TextField nameField;
     private String purchaserName;
+    Label ticketsLabel;
+    GridPane formLayout;
+    VBox layout;
     Button bookButton;
 
     private ObservableList<Event> events;
@@ -57,7 +58,7 @@ public class UserScene {
         });
         eventListView.getSelectionModel().selectedItemProperty()
                 .addListener((observable, oldValue, newValue) ->
-                displayEventDetails(newValue));
+                        displayEventDetails(newValue));
 
         titleLabel = new Label();
         locationLabel = new Label();
@@ -65,7 +66,7 @@ public class UserScene {
         timeLabel = new Label();
         availableTicketsLabel = new Label();
 
-        Label ticketsLabel = new Label("Number of Tickets:");
+        ticketsLabel = new Label("Number of Tickets:");
         ticketsSpinner = new Spinner<>(1, 10, 1);
         nameField = new TextField();
         purchaserName = nameField.getText();
@@ -74,7 +75,7 @@ public class UserScene {
         bookButton = new Button("Book Tickets");
         bookButton.setOnAction(new BookButtonHandler());
 
-        GridPane formLayout = new GridPane();
+        formLayout = new GridPane();
         formLayout.setHgap(10);
         formLayout.setVgap(10);
         formLayout.setAlignment(Pos.CENTER);
@@ -86,26 +87,13 @@ public class UserScene {
         formLayout.addRow(5, ticketsLabel, ticketsSpinner);
         formLayout.addRow(6, bookButton);
 
-        VBox layout = new VBox(10);
+        layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(eventListView, formLayout);
 
-        Scene scene = new Scene(layout, 400, 300);
+        scene = new Scene(layout, 400, 300);
         stage.setScene(scene);
-        userScene = new Scene(layout, 400, 300);
-    }
-    //ToDo: this is unused, why?
-    public void setEvents(List<Event> events) {
-        // upcoming events that user can book
-        List<Event> upcomingEvents = new ArrayList<>();
-        for (Event event : events) {
-            if (event.getDateTime().toLocalDate().isAfter(LocalDate.now())) {
-                upcomingEvents.add(event);
-            }
-        }
 
-        this.events = FXCollections.observableArrayList(upcomingEvents);
-        eventListView.setItems(this.events);
     }
     // display event details
     private void displayEventDetails(Event event) {
@@ -127,8 +115,8 @@ public class UserScene {
     }
     private void viewBookedTickets(Ticket bookedTicket) {
         // Create a new dialog window to display the ticket details
-        Stage dialogStage = new Stage();
-        dialogStage.setTitle("Booked Tickets");
+        stage = new Stage();
+        stage.setTitle("Booked Tickets");
 
         // Create labels to display the ticket details
         Label titleLabel = new Label("Event: " + bookedTicket.getEvent().getTitle());
@@ -138,16 +126,16 @@ public class UserScene {
         Label ticketsLabel = new Label("Number of Tickets: " + bookedTicket.getNumTickets());
 
         // Create a layout to hold the labels
-        VBox layout = new VBox(10);
+        layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(titleLabel, locationLabel, dateLabel, timeLabel, ticketsLabel);
 
         // Create a scene with the layout and set it to the dialog stage
-        Scene scene = new Scene(layout);
-        dialogStage.setScene(scene);
+        scene = new Scene(layout, 600, 400);
+        stage.setScene(scene);
 
         // Display the dialog stage
-        dialogStage.show();
+        stage.show();
     }
 
     // the user can only book upcoming events, past events cannot be booked
@@ -193,18 +181,17 @@ public class UserScene {
         }
         return null;
     }
-        public Scene getUserScene() {return userScene;}
+
+    public Scene getScene() {return scene;}
 
     class BookButtonHandler implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent e) {
             Ticket bookedTicket = bookTickets();
-            String file = "tickets.txt";
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-                if (bookedTicket != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("tickets.txt"))) {
+                if (bookedTicket != null)
                     writer.write(bookedTicket.toString());
-                }
             } catch (IOException except) {
                 System.err.format("IOException: %s%n", except);
             }
