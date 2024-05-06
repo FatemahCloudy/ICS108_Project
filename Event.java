@@ -1,5 +1,4 @@
 package com.example.ics108_project;
-
 import java.time.LocalDateTime;
 
 public class Event {
@@ -10,7 +9,7 @@ public class Event {
     private String location;
     private int capacity;
     private int bookedTickets;
-    //ToDo: edit the date type
+
     public Event(String title, String category, String description, LocalDateTime dateTime, String location, int capacity) {
         this.title = title;
         this.category = category;
@@ -25,18 +24,6 @@ public class Event {
 
     // A useful method to see if there is enough tickets to book or no
     public int availableTickets() {return capacity - bookedTickets;}
-
-    // ToDo: This method was never used, it is the one that generate tickets
-    public Ticket book(String purchaserName, int numTickets) {
-        if (availableTickets() >= numTickets) {
-            bookTickets(numTickets); // This method would update the number of bookedTickets.
-            return new Ticket(this, purchaserName, numTickets);
-        } else {
-            // Handle the scenario where there are not enough tickets to book.
-            System.out.println("Not enough tickets available to book.");
-            return null;
-        }
-    }
 
     @Override
     public String toString() {
@@ -76,7 +63,7 @@ public class Event {
 
     public String getLocation() {return location;}
 
-    public int getBookedTickets() {return bookedTickets;}
+    //public int getBookedTickets() {return bookedTickets;}
 
     public int getAvailableTickets() {return capacity - bookedTickets;}
 }
