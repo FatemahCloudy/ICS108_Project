@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 
+//ToDo: Switch buttons does not appear, solve this
 public class Main extends Application {
 
     Stage primaryStage;
@@ -49,10 +50,6 @@ public class Main extends Application {
         layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(buttonLayout);
-
-        // Create the main scene and set the layout as the root
-        Scene mainScene = new Scene(layout, 400, 300);
-        primaryStage.setScene(mainScene);
 
         // Show the primary stage
         primaryStage.show();
