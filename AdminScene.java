@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-
+// ToDo: when a new event is declared, it need to be in a file
 public class AdminScene {
     private Stage stage;
-    private Scene adminScene;
+    private Scene scene;
     private TextField titleField;
     private TextField categoryField;
     private TextArea descriptionArea;
@@ -28,6 +28,9 @@ public class AdminScene {
     private TextField capacityField;
     private ListView<Event> eventListView;
     private Label statusLabel;
+    VBox layout;
+    HBox buttonLayout;
+    GridPane formLayout;
     Button addButton, editButton, deleteButton;
 
     private ObservableList<Event> events;
@@ -74,7 +77,7 @@ public class AdminScene {
 
         statusLabel = new Label();
 
-        GridPane formLayout = new GridPane();
+        formLayout = new GridPane();
         formLayout.setHgap(10);
         formLayout.setVgap(10);
         formLayout.addRow(0, new Label("Title:"), titleField);
@@ -85,15 +88,14 @@ public class AdminScene {
         formLayout.addRow(5, new Label("Location:"), locationField);
         formLayout.addRow(6, new Label("Capacity:"), capacityField);
 
-        HBox buttonLayout = new HBox(10);
+        buttonLayout = new HBox(10);
         buttonLayout.getChildren().addAll(addButton, editButton, deleteButton);
 
-        VBox layout = new VBox(10);
+        layout = new VBox(10);
         layout.getChildren().addAll(formLayout, buttonLayout, eventListView, statusLabel);
 
-        Scene scene = new Scene(layout, 600, 400);
+        scene = new Scene(layout, 600, 400);
         stage.setScene(scene);
-        adminScene = scene;
     }
 
     private void displayEventDetails(Event event) {
@@ -125,7 +127,7 @@ public class AdminScene {
         return LocalTime.parse(time, formatter);
     }
 
-    public Scene getAdminScene() {return adminScene;}
+    public Scene getScene() {return scene;}
 
     class DeleteButtonHandler implements EventHandler<ActionEvent> {
         @Override
@@ -160,6 +162,7 @@ public class AdminScene {
         }
     }
 
+    // ToDo: All the information is deleted when the admin press the button (need to be solved)
     class EditButtonHandler implements EventHandler<ActionEvent> {
         @Override
         public void handle(ActionEvent e) {
