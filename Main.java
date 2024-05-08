@@ -1,4 +1,4 @@
-package com.example.ics108_project;
+package com.example.project123;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 
-//ToDo: Switch buttons does not appear, solve this
 public class Main extends Application {
 
     Stage primaryStage;
@@ -44,18 +43,26 @@ public class Main extends Application {
         // Create a layout for the buttons
         buttonLayout = new HBox(10);
         buttonLayout.getChildren().addAll(switchToAdminButton, switchToUserButton);
-        buttonLayout.setAlignment(Pos.CENTER);
 
         // Create a layout for the main content
         layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(buttonLayout);
+        layout.setAlignment(Pos.CENTER);
+
+        // Set the layout as the root of the scene
+        Scene scene = new Scene(layout);
+
+        // Set the scene for the primary stage
+        primaryStage.setScene(scene);
 
         // Show the primary stage
         primaryStage.show();
     }
 
-    public static void main(String[] args) {launch(args);}
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     class SwitchHandler implements EventHandler<ActionEvent> {
         @Override
@@ -67,7 +74,6 @@ public class Main extends Application {
                 primaryStage.setScene(adminScene.getScene());
                 primaryStage.setTitle("Event Management");
             }
-
         }
     }
 }
