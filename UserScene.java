@@ -104,11 +104,6 @@ public class UserScene {
         layout = new VBox(10);
         layout.setPadding(new Insets(10));
         layout.getChildren().addAll(eventListView, formLayout, switchButton);
-        Button switchButton = new Button("Switch to Admin Scene");
-        switchButton.setOnAction(e -> {
-            UserScene userScene = new UserScene(stage);
-            stage.setScene(userScene.getScene());
-        });
 
         layout = new VBox(10);
         layout.setPadding(new Insets(10));
