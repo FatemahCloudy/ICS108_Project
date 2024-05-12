@@ -1,40 +1,31 @@
-# ICS108_Project
-Event Booking System
+# Event Booking System
 
-Project Overview:
+## Table of Contents
+ - [Description](#description)
+ - [Technologies Used](#technologies-used)
+ - [Design Overview](#design-overview)
+ - [Usage](#usage) 
 
-The Event Booking System is a Java application designed to facilitate booking events like 
-conferences, concerts, seminars, workshops, and more. The system aims to provide users with a 
-user-friendly platform to browse upcoming events and book tickets.
 
-Key Features:
-- The system has two scenes: admin scene, and user scene.
-- The admin can perform event management: add, edit, and delete events.
-- Events include details such as title, category, description, date, time, location and capacity 
-(number of available ticket)
-- Users can browse upcoming events and view event details.
-- Users can select events and book tickets based on available slots.
-- Users can book multiple tickets at once.
+## Description 
+The Event Booking System is a simple JavaFX application designed to manag registration for various events that requires booking tickets. It allows users to book tickets, view available events, and view booked tickets. The system also provides administrative features for adding, updating, or deleting course events. 
 
-Minimum Requirements:
-- Classes for Event, Ticket and User.
-- At least two scenes: admin and user.
-- The user scene should show events title, location, date, time and available ticket.
-- Past events (with date older than current day) should be either excluded from the view 
-entirely, or if shown in the program, the user must not be able to book them.
-- The admin should be able to create, delete and edit events in the admin scene.
+## Technologies Used 
+ - **Java**: Core programming language used for building the application logic. 
+ - **JavaFX**: Graphical User Interface (GUI) toolkit for Java used to create the desktop application interface. 
+ - 
+## Design Overview The application is structured into several classes, each responsible for specific aspects of the application: 
 
-Submission:
+ - **Main**: The entry point of the application which launches the JavaFX application.
+ - **Variables**: `Stage primaryStage`
+ - **Methods**: `start(Stage primaryStage)` 
+ - 
+## Usage 
 
-The deadline for the project will be the last week of the term, details will be announced later.
+### Running the Application 
+To run the application, you will need to have Java and JavaFX set up on your machine. Once installed, you can compile and run the application from your IDE. 
 
-Team Formation:
-- The project is team based; each team must have 2 members.
-- It is the student's responsibility to find a teammate. 
-- Teams can be formed by students from different sections taught by the same instructor.
-- You can register your team by filling this form: https://forms.gle/bTeSTXp5EayjhbD66
-
-Note:
-
-The project requires some material from Chapter 13 on JavaFX, which will be covered after the Eid 
-break. However, you can still form a team and start working on the other parts.
+### Using the Application
+ 1. **Login**: Start by logging in as a user.
+ 2. **Viewing Courses**: The available events appear in the top section.
+ 3. **Registering for a Course**: Click on the event you wish to attend, choose the number of tickets, and press 'Book'.
