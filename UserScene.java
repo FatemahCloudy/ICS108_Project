@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -93,6 +94,27 @@ public class UserScene {
 
         scene = new Scene(layout, 400, 300);
         stage.setScene(scene);
+        // Switch Scene Button
+        Button switchButton = new Button("Switch to Admin Scene");
+        switchButton.setOnAction(e -> {
+            AdminScene adminScene = new AdminScene(stage);
+            stage.setScene(adminScene.getScene());
+        });
+
+        layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        layout.getChildren().addAll(eventListView, formLayout, switchButton);
+        Button switchButton = new Button("Switch to Admin Scene");
+        switchButton.setOnAction(e -> {
+            UserScene userScene = new UserScene(stage);
+            stage.setScene(userScene.getScene());
+        });
+
+        layout = new VBox(10);
+        layout.setPadding(new Insets(10));
+        Node buttonLayout = null;
+        Node statusLabel = null;
+        layout.getChildren().addAll(formLayout, buttonLayout, eventListView, statusLabel, switchButton);
 
     }
     // display event details
