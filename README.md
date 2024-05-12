@@ -14,7 +14,8 @@ The Event Booking System is a simple JavaFX application designed to manag regist
  - **Java**: Core programming language used for building the application logic. 
  - **JavaFX**: Graphical User Interface (GUI) toolkit for Java used to create the desktop application interface. 
  - 
-## Design Overview The application is structured into several classes, each responsible for specific aspects of the application: 
+## Design Overview
+The application is structured into several classes, each responsible for specific aspects of the application: 
 
  - **Main**: The entry point of the application which launches the JavaFX application.
  - **Variables**: `Stage primaryStage`
