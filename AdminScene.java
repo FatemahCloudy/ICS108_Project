@@ -1,192 +1,171 @@
-package com.example.project123;
+package com.eventbookingsystem;
 
-
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-// ToDo: when a new event is declared, it need to be in a file
 public class AdminScene {
-    private Stage stage;
-    private Scene scene;
-    private TextField titleField;
-    private TextField categoryField;
-    private TextArea descriptionArea;
-    private DatePicker datePicker;
-    private TextField timeField;
-    private TextField locationField;
-    private TextField capacityField;
-    private ListView<Event> eventListView;
-    private Label statusLabel;
-    VBox layout;
-    HBox buttonLayout;
-    GridPane formLayout;
-    Button addButton, editButton, deleteButton;
+    // Fields of AdminScene
+    TextField titleField;
+    ComboBox<String> categoryComboBox;
+    TextArea descriptionArea;
+    DatePicker startDatePicker, endDatePicker;
+    TextField startTimeField, endTimeField;
+    TextField locationField;
+    TextField capacityField;
+    // Model to manage event data
+    private EventDataModel eventDataModel;
 
-    private ObservableList<Event> events;
-
-    public AdminScene(Stage stage) {
-        this.stage = stage;
-        events = FXCollections.observableArrayList();
-        initialize();
+    // Constructor
+    public AdminScene(EventDataModel eventDataModel) {
+        this.eventDataModel = eventDataModel;
     }
 
-    private void initialize() {
+    // Method to setup admin scene (GUI)
+    public GridPane createAdminScene() {
+        GridPane layout = new GridPane();
+        layout.setVgap(10);
+        layout.setHgap(10);
+        layout.setPadding(new Insets(10, 10, 10, 10));
+
         titleField = new TextField();
-        categoryField = new TextField();
+        categoryComboBox = new ComboBox<>();
+        categoryComboBox.getItems().addAll("Conference", "Concert", "Seminar", "Workshop");
+        categoryComboBox.setValue("Conference");
         descriptionArea = new TextArea();
-        datePicker = new DatePicker();
-        timeField = new TextField();
+
+        startDatePicker = new DatePicker(LocalDate.now());
+        endDatePicker = new DatePicker(LocalDate.now());
+        startTimeField = new TextField();
+        endTimeField = new TextField();
+        startTimeField.setPromptText("HH:mm");
+        endTimeField.setPromptText("HH:mm");
+
         locationField = new TextField();
         capacityField = new TextField();
+        Button addButton = new Button("Add Event");
+        Button editButton = new Button("Edit Event");
+        Button deleteButton = new Button("Delete Event");
+        HBox buttonGroup = new HBox(10);
+        buttonGroup.getChildren().addAll(addButton, editButton, deleteButton);
 
-        addButton = new Button("Add Event");
-        addButton.setOnAction(new AddButtonHandler());
+        ListView<String> eventListView = new ListView<>();
+        eventDataModel.updateEventList(eventListView);
 
-        editButton = new Button("Edit Event");
-        editButton.setOnAction(new EditButtonHandler());
+        addButton.setOnAction(e -> addEvent());
+        deleteButton.setOnAction(e -> deleteEvent(eventListView.getSelectionModel().getSelectedIndex(), eventListView));
+        editButton.setOnAction(e -> editEvent(eventListView.getSelectionModel().getSelectedIndex()));
 
-        deleteButton = new Button("Delete Event");
-        deleteButton.setOnAction(new DeleteButtonHandler());
+        layout.addRow(0, new Label("Title:"), titleField);
+        layout.addRow(1, new Label("Category:"), categoryComboBox);
+        layout.addRow(2, new Label("Description:"), descriptionArea);
+        layout.addRow(3, new Label("Start Date:"), startDatePicker);
+        layout.addRow(4, new Label("End Date:"), endDatePicker);
+        layout.addRow(5, new Label("Start Time:"), startTimeField);
+        layout.addRow(6, new Label("End Time:"), endTimeField);
+        layout.addRow(7, new Label("Location:"), locationField);
+        layout.addRow(8, new Label("Capacity:"), capacityField);
+        layout.addRow(9, new Label(""), buttonGroup);
+        layout.addRow(10, new Label("Events List:"), eventListView);
 
-        eventListView = new ListView<>();
-        eventListView.setItems(events);
-        eventListView.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Event item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.getTitle());
-                }
-            }
-        });
-        eventListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
-                displayEventDetails(newValue));
-
-        statusLabel = new Label();
-
-        formLayout = new GridPane();
-        formLayout.setHgap(10);
-        formLayout.setVgap(10);
-        formLayout.addRow(0, new Label("Title:"), titleField);
-        formLayout.addRow(1, new Label("Category:"), categoryField);
-        formLayout.addRow(2, new Label("Description:"), descriptionArea);
-        formLayout.addRow(3, new Label("Date:"), datePicker);
-        formLayout.addRow(4, new Label("Time:"), timeField);
-        formLayout.addRow(5, new Label("Location:"), locationField);
-        formLayout.addRow(6, new Label("Capacity:"), capacityField);
-
-        buttonLayout = new HBox(10);
-        buttonLayout.getChildren().addAll(addButton, editButton, deleteButton);
-
-        layout = new VBox(10);
-        layout.getChildren().addAll(formLayout, buttonLayout, eventListView, statusLabel);
-
-        scene = new Scene(layout, 600, 400);
-        stage.setScene(scene);
+        return layout;
     }
 
-    private void displayEventDetails(Event event) {
-        if (event != null) {
-            titleField.setText(event.getTitle());
-            categoryField.setText(event.getCategory());
-            descriptionArea.setText(event.getDescription());
-            datePicker.setValue(event.getDateTime().toLocalDate());
-            timeField.setText(event.getDateTime().toLocalTime().toString());
-            locationField.setText(event.getLocation());
-            capacityField.setText(String.valueOf(event.getCapacity()));
-        } else {
-            clearFields();
+        private void addEvent() {
+    // Validate inputs before adding the event
+    if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
+            capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
+            startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Please ensure all fields are filled and capacity is a valid number.");
+        error.showAndWait();
+        return;
+    }
+
+    LocalDate startDate = startDatePicker.getValue();
+    LocalDate endDate = endDatePicker.getValue();
+    if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
+        error.showAndWait();
+        return;
+    }
+
+    LocalTime startTime = null;
+    LocalTime endTime = null;
+    try {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
+        endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
+        if (endTime.isBefore(startTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time.");
         }
+    } catch (Exception e) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
+        error.showAndWait();
+        return;
     }
 
-    private void clearFields() {
-        titleField.clear();
-        categoryField.clear();
-        descriptionArea.clear();
-        datePicker.setValue(null);
-        timeField.clear();
-        locationField.clear();
-        capacityField.clear();
+    Event event = new Event(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
+                            startDate, startTime, endDate, endTime, locationField.getText(),
+                            Integer.parseInt(capacityField.getText()));
+    eventDataModel.addEvent(event);
+    eventDataModel.updateEventList(eventListView);
+    clearFields();
+}private void editEvent(int index) {
+    if (index == -1) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "No event selected for editing.");
+        error.showAndWait();
+        return;
     }
 
-    private LocalTime parseTime(String time) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(time, formatter);
+    Event event = eventDataModel.getEvents().get(index);
+    if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
+            capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
+            startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid event data. Please ensure all fields are filled and capacity is a valid number.");
+        error.showAndWait();
+        return;
     }
 
-    public Scene getScene() {return scene;}
+    LocalDate startDate = startDatePicker.getValue();
+    LocalDate endDate = endDatePicker.getValue();
+    if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
+        error.showAndWait();
+        return;
+    }
 
-    class DeleteButtonHandler implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent e) {
-            if (e.getSource() == deleteButton) {
-                Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-                if (selectedEvent != null) {
-                    events.remove(selectedEvent);
-                    clearFields();
-                    statusLabel.setText("Event deleted: " + selectedEvent.getTitle());
-                }
-            }
+    LocalTime startTime = null;
+    LocalTime endTime = null;
+    try {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
+        endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
+        if (endTime.isBefore(startTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time.");
         }
-    }
-    class AddButtonHandler implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent e) {
-            if (e.getSource() == addButton) {
-                String title = titleField.getText();
-                String category = categoryField.getText();
-                String description = descriptionArea.getText();
-                LocalDateTime dateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
-                String location = locationField.getText();
-                int capacity = Integer.parseInt(capacityField.getText());
-
-                Event event = new Event(title, category, description, dateTime, location, capacity);
-                events.add(event);
-
-                clearFields();
-                statusLabel.setText("Event added: " + event.getTitle());
-            }
-        }
+    } catch (Exception e) {
+        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
+        error.showAndWait();
+        return;
     }
 
-    // ToDo: All the information is deleted when the admin press the button (need to be solved)
-    class EditButtonHandler implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent e) {
-            Event selectedEvent = eventListView.getSelectionModel().getSelectedItem();
-            if (selectedEvent != null) {
-                String newTitle = titleField.getText();
-                String newCategory = categoryField.getText();
-                String newDescription = descriptionArea.getText();
-                LocalDateTime newDateTime = LocalDateTime.of(datePicker.getValue(), parseTime(timeField.getText()));
-                String newLocation = locationField.getText();
-                int newCapacity = Integer.parseInt(capacityField.getText());
-
-                selectedEvent.setTitle(newTitle);
-                selectedEvent.setCategory(newCategory);
-                selectedEvent.setDescription(newDescription);
-                selectedEvent.setDateTime(newDateTime);
-                selectedEvent.setLocation(newLocation);
-                selectedEvent.setCapacity(newCapacity);
-
-                clearFields();
-                statusLabel.setText("Event edited: " + selectedEvent.getTitle());
-            }
-        }
-    }
+    event.updateEvent(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
+                      startDate, startTime, endDate, endTime, locationField.getText(),
+                      Integer.parseInt(capacityField.getText()));
+    eventDataModel.updateEventList(eventListView);
+    clearFields();
+}private void clearFields() {
+    titleField.clear();
+    categoryComboBox.setValue("Conference");
+    descriptionArea.clear();
+    startDatePicker.setValue(LocalDate.now());
+    endDatePicker.setValue(LocalDate.now());
+    startTimeField.clear();
+    endTimeField.clear();
+    locationField.clear();
+    capacityField.clear();
 }
