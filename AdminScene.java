@@ -57,7 +57,7 @@ public class AdminScene {
         eventDataModel.updateEventList(eventListView);
 
         addButton.setOnAction(e -> addEvent());
-        deleteButton.setOnAction(e -> deleteEvent(eventListView.getSelectionModel().getSelectedIndex(), eventListView));
+        deleteButton.setOnAction(e -> clearFields());
         editButton.setOnAction(e -> editEvent(eventListView.getSelectionModel().getSelectedIndex()));
 
         layout.addRow(0, new Label("Title:"), titleField);
@@ -75,97 +75,98 @@ public class AdminScene {
         return layout;
     }
 
-        private void addEvent() {
-    // Validate inputs before adding the event
-    if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
-            capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
-            startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Please ensure all fields are filled and capacity is a valid number.");
-        error.showAndWait();
-        return;
-    }
-
-    LocalDate startDate = startDatePicker.getValue();
-    LocalDate endDate = endDatePicker.getValue();
-    if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
-        error.showAndWait();
-        return;
-    }
-
-    LocalTime startTime = null;
-    LocalTime endTime = null;
-    try {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
-        endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("End time cannot be before start time.");
+    private void addEvent() {
+        // Validate inputs before adding the event
+        if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
+                capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
+                startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Please ensure all fields are filled and capacity is a valid number.");
+            error.showAndWait();
+            return;
         }
-    } catch (Exception e) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
-        error.showAndWait();
-        return;
-    }
 
-    Event event = new Event(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
-                            startDate, startTime, endDate, endTime, locationField.getText(),
-                            Integer.parseInt(capacityField.getText()));
-    eventDataModel.addEvent(event);
-    eventDataModel.updateEventList(eventListView);
-    clearFields();
-}private void editEvent(int index) {
-    if (index == -1) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "No event selected for editing.");
-        error.showAndWait();
-        return;
-    }
-
-    Event event = eventDataModel.getEvents().get(index);
-    if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
-            capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
-            startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid event data. Please ensure all fields are filled and capacity is a valid number.");
-        error.showAndWait();
-        return;
-    }
-
-    LocalDate startDate = startDatePicker.getValue();
-    LocalDate endDate = endDatePicker.getValue();
-    if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
-        error.showAndWait();
-        return;
-    }
-
-    LocalTime startTime = null;
-    LocalTime endTime = null;
-    try {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
-        endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
-        if (endTime.isBefore(startTime)) {
-            throw new IllegalArgumentException("End time cannot be before start time.");
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
+            error.showAndWait();
+            return;
         }
-    } catch (Exception e) {
-        Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
-        error.showAndWait();
-        return;
-    }
 
-    event.updateEvent(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
-                      startDate, startTime, endDate, endTime, locationField.getText(),
-                      Integer.parseInt(capacityField.getText()));
-    eventDataModel.updateEventList(eventListView);
-    clearFields();
-}private void clearFields() {
-    titleField.clear();
-    categoryComboBox.setValue("Conference");
-    descriptionArea.clear();
-    startDatePicker.setValue(LocalDate.now());
-    endDatePicker.setValue(LocalDate.now());
-    startTimeField.clear();
-    endTimeField.clear();
-    locationField.clear();
-    capacityField.clear();
+        LocalTime startTime = null;
+        LocalTime endTime = null;
+        try {
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
+            endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
+            if (endTime.isBefore(startTime)) {
+                throw new IllegalArgumentException("End time cannot be before start time.");
+            }
+        } catch (Exception e) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
+            error.showAndWait();
+            return;
+        }
+
+        Event event = new Event(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
+                startDate, startTime, endDate, endTime, locationField.getText(),
+                Integer.parseInt(capacityField.getText()));
+        eventDataModel.addEvent(event);
+        eventDataModel.updateEventList(eventListView);
+        clearFields();
+    }private void editEvent(int index) {
+        if (index == -1) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "No event selected for editing.");
+            error.showAndWait();
+            return;
+        }
+
+        Event event = eventDataModel.getEvents().get(index);
+        if (titleField.getText().isEmpty() || descriptionArea.getText().isEmpty() || locationField.getText().isEmpty() ||
+                capacityField.getText().isEmpty() || !capacityField.getText().matches("\\d+") ||
+                startTimeField.getText().isEmpty() || endTimeField.getText().isEmpty()) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Invalid event data. Please ensure all fields are filled and capacity is a valid number.");
+            error.showAndWait();
+            return;
+        }
+
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Please select valid start and end dates.");
+            error.showAndWait();
+            return;
+        }
+
+        LocalTime startTime = null;
+        LocalTime endTime = null;
+        try {
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            startTime = LocalTime.parse(startTimeField.getText(), timeFormatter);
+            endTime = LocalTime.parse(endTimeField.getText(), timeFormatter);
+            if (endTime.isBefore(startTime)) {
+                throw new IllegalArgumentException("End time cannot be before start time.");
+            }
+        } catch (Exception e) {
+            Alert error = new Alert(Alert.AlertType.ERROR, "Invalid time format. Please enter time in HH:mm format.");
+            error.showAndWait();
+            return;
+        }
+
+        event.updateEvent(titleField.getText(), categoryComboBox.getValue(), descriptionArea.getText(),
+                startDate, startTime, endDate, endTime, locationField.getText(),
+                Integer.parseInt(capacityField.getText()));
+        eventDataModel.updateEventList(eventListView);
+        clearFields();
+    }private void clearFields() {
+        titleField.clear();
+        categoryComboBox.setValue("Conference");
+        descriptionArea.clear();
+        startDatePicker.setValue(LocalDate.now());
+        endDatePicker.setValue(LocalDate.now());
+        startTimeField.clear();
+        endTimeField.clear();
+        locationField.clear();
+        capacityField.clear();
+    }
 }
