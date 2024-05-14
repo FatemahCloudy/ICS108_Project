@@ -18,8 +18,8 @@ The Event Booking System is a simple JavaFX application designed to manag regist
 The application is structured into several classes, each responsible for specific aspects of the application: 
 
  - **Main**: The entry point of the application which launches the JavaFX application.
- - **Variables**: `Stage primaryStage`
- - **Methods**: `start(Stage primaryStage)` 
+ - **Variables**: `TabPane tabPane` `Tab adminTab, userTab` `Scene scene` `EventDataModel eventDataModel` `UserScene userScene` `AdminScene adminScene` 
+ - **Methods**: `start(Stage primaryStage)` `main(String[] args)` 
  - 
 ## Usage 
 
