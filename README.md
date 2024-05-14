@@ -18,8 +18,95 @@ The Event Booking System is a simple JavaFX application designed to manag regist
 The application is structured into several classes, each responsible for specific aspects of the application: 
 
  - **Main**: The entry point of the application which launches the JavaFX application.
- - **Variables**: `TabPane tabPane` `Tab adminTab, userTab` `Scene scene` `EventHandler eventHandler` `UserScene userScene` `AdminScene adminScene` 
- - **Methods**: `start(Stage primaryStage)` `main(String[] args)` 
+ - **Variables**:
+`
+addButton
+adminScene
+adminTab
+bookedTickets
+bookedTicketsListView
+bookingButton
+bookingTools
+buttonGroup
+capacity
+capacityField
+category
+categoryComboBox
+deleteButton
+description
+descriptionArea
+editButton
+endDate
+endDatePicker
+endTime
+endTimeField
+event
+eventHandler
+eventListView
+events
+layout
+location
+locationField
+numTickets
+scene
+startDate
+startDatePicker
+startTime
+startTimeField
+tabPane
+ticketsRemaining
+title
+titleField
+userScene
+userTab EventHandler eventHandler
+TabPane tabPane
+Tab adminTab
+Tab userTab
+Scene scene
+UserScene userScene
+AdminScene adminScene
+LocalDate startDate
+LocalDate endDate
+TextField startTimeField
+TextField endTimeField
+EventHandler eventHandler
+ListView<Event> eventListView
+ListView<String> bookedTicketsListView
+ComboBox<Integer> ticketNumberComboBox
+Button bookingButton
+VBox layout
+LocalDate endDate
+LocalTime startTime
+LocalTime endTime
+`
+ - **Methods**:
+`
+addEvent()
+bookTickets()
+bookTickets(Event event, int numTickets, LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime)
+clearFields()
+createAdminScene()
+deleteEvent(int index)
+editEvent(int index)
+getEndDate()
+getEndTime()
+getEvents()
+getScene()
+getStartDate()
+getStartTime()
+getTitle()
+getTicketsRemaining()
+main(String[] args)
+refreshEventListView()
+removeEvent()
+setup()
+start(Stage primaryStage)
+toString()
+updateBookedTicketsListView()
+updateEvent()
+updateEventList()
+UserScene()
+`
  - 
 ## Usage 
 
