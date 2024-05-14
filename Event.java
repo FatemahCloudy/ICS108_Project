@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 /**
  *  Event class represents an event in the event booking system. Each event has details such as title,
- *  category, description, StartDate, startTime, location, and capacity, along with the remaining
+ *  category, description, date, time, location, and capacity, along with the remaining
  *  tickets available for booking.
  */
 public class Event {
@@ -14,24 +14,19 @@ public class Event {
     private String title; // The title of the event
     private String category; // The category of the event (e.g., Concert, Seminar)
     private String description; // A detailed description of the event
-    private LocalDate startDate; // The StartDate on which the event is scheduled
-    private LocalDate endDate; // The endDate on which the event is scheduled
-    private LocalTime startTime; // The startTime at which the event starts
-    private LocalTime endTime; // The endTime at which the event starts
+    private LocalDate date; // The date on which the event is scheduled
+    private LocalTime time; // The time at which the event starts
     private String location; // The location where the event will take place
     private int capacity; // The total number of seats available for the event
     private int ticketsRemaining; // The number of tickets currently available for booking
 
     // Constructor
-    public Event(String title, String category, String description, LocalDate startDate, 
-                 LocalTime startTime, LocalDate endDate, LocalTime endTime, String location, int capacity) {
+    public Event(String title, String category, String description, LocalDate date, LocalTime time, String location, int capacity) {
         this.title = title;
         this.category = category;
         this.description = description;
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.endDate = endDate;
-        this.endTime = endTime;
+        this.date = date;
+        this.time = time;
         this.location = location;
         this.capacity = capacity;
         this.ticketsRemaining = capacity; // Initially, all tickets are available.
@@ -62,20 +57,20 @@ public class Event {
         this.description = description;
     }
 
-    public LocalDate getStartDate() {
-        return startDate;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
-    public LocalTime getStartTime() {
-        return startTime;
+    public LocalTime getTime() {
+        return time;
     }
 
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 
     public String getLocation() {
@@ -113,16 +108,12 @@ public class Event {
     }
 
     // Method to update event details
-    public void updateEvent(String title, String category, String description,
-                            LocalDate startDate, LocalTime startTime, LocalDate endDate,
-                            LocalTime endTime, String location, int capacity) {
+    public void updateEvent(String title, String category, String description, LocalDate date, LocalTime time, String location, int capacity) {
         this.title = title;
         this.category = category;
         this.description = description;
-        this.startDate = startDate;
-        this.startTime = startTime;
-        this.endDate = endDate;
-        this.endTime = endTime;
+        this.date = date;
+        this.time = time;
         this.location = location;
         this.capacity = capacity;
         // Resetting tickets remaining to new capacity
@@ -130,11 +121,16 @@ public class Event {
     }
 
     // Provides a string representation of the event, including all its details
-@Override
+    @Override
     public String toString() {
-        return "Event" + "title: " + title + ", category: " + category + ", description: "
-                + description + ", startDate: " + startDate + ", endDate: " + endDate + ", startTime: "
-                + startTime + ", endTime: " + endTime + ", location: " + location + ", capacity: " + capacity
-                + ", ticketsRemaining: " + ticketsRemaining;
-}
+        return "Event: " +
+                "title = '" + title + '\'' +
+                ", category = '" + category + '\'' +
+                ", description = '" + description + '\'' +
+                ", date = " + date +
+                ", time = " + time +
+                ", location = '" + location + '\'' +
+                ", capacity = " + capacity +
+                ", ticketsRemaining = " + ticketsRemaining;
+    }
 }
