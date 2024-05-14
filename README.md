@@ -18,7 +18,7 @@ The Event Booking System is a simple JavaFX application designed to manag regist
 The application is structured into several classes, each responsible for specific aspects of the application: 
 
  - **Main**: The entry point of the application which launches the JavaFX application.
- - **Variables**: `TabPane tabPane` `Tab adminTab, userTab` `Scene scene` `EventDataModel eventDataModel` `UserScene userScene` `AdminScene adminScene` 
+ - **Variables**: `TabPane tabPane` `Tab adminTab, userTab` `Scene scene` `EventHandler eventHandler` `UserScene userScene` `AdminScene adminScene` 
  - **Methods**: `start(Stage primaryStage)` `main(String[] args)` 
  - 
 ## Usage 
@@ -27,6 +27,7 @@ The application is structured into several classes, each responsible for specifi
 To run the application, you will need to have Java and JavaFX set up on your machine. Once installed, you can compile and run the application from your IDE. 
 
 ### Using the Application
- 1. **Login**: Start by logging in as a user.
- 2. **Viewing Courses**: The available events appear in the top section.
- 3. **Registering for a Course**: Click on the event you wish to attend, choose the number of tickets, and press 'Book'.
+ 1. **Switching**: Click on the user/admin tab.
+ 2. **Viewing Events**: The available events appear in the top section.
+ 3. **Booking a Ticket**: Click on the event you wish to attend, choose the number of tickets, and press 'Book'.
+ 4. **Managment**: The admin can add, edit, or delete events by entering the requiered information then press the button.
