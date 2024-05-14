@@ -1,79 +1,66 @@
-package com.example.project123;
+package com.eventbookingsystem;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-import javafx.event.EventHandler;
+
+ /**
+ This class sets up the JavaFX application, and initializes the user interface.
+ */
 
 public class Main extends Application {
+    // Tabs and tabPane to hold them
+    TabPane tabPane;
+    Tab adminTab, userTab;
+    Scene scene;
+    // Holds the event data shared across different scenes
+    private EventHandler eventHandler;
+    // Scene for user interactions
+    private UserScene userScene;
+    // Scene for admin interactions
+    private AdminScene adminScene;
 
-    Stage primaryStage;
-    AdminScene adminScene;
-    UserScene userScene;
-    Button switchToUserButton, switchToAdminButton;
-    HBox buttonLayout;
-    VBox layout;
-
+    // Method to start the application and sets up the primary stage including all tabs and scenes
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+        // Initialize the shared data model
+        eventHandler = new EventHandler();
+        // Administrative scene for managing events
+        adminScene = new AdminScene(eventHandler);
+        // Store reference to userScene
+        userScene = new UserScene(eventHandler);
 
-        // Initialize both scenes
-        adminScene = new AdminScene(primaryStage);
-        userScene = new UserScene(primaryStage);
+        // Create a TabPane to hold tabs for different sections of the application
+        tabPane = new TabPane();
+        // Tab for admin functions
+        adminTab = new Tab("Admin", adminScene.createAdminScene());
+        // Tab for user functions
+        userTab = new Tab("User", userScene.getScene());
 
-        // Set initial scene (user scene)
-        primaryStage.setScene(userScene.getScene());
-        primaryStage.setTitle("Event Booking");
+        // Add both tabs to the tab pane
+        tabPane.getTabs().addAll(adminTab, userTab);
+        // Add a listener to refresh the event list view whenever the user tab is selected
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            if (newTab == userTab) {
+                // Refresh the list view when the user tab is selected
+                userScene.refreshEventListView();
+            }
+        });
 
-        // Create a button to switch to the admin scene
-        switchToAdminButton = new Button("Switch to Admin");
-        switchToAdminButton.setOnAction(new SwitchHandler());
-
-        // Create a button to switch to the user scene
-        switchToUserButton = new Button("Switch to User");
-        switchToUserButton.setOnAction(new SwitchHandler());
-
-        // Create a layout for the buttons
-        buttonLayout = new HBox(10);
-        buttonLayout.getChildren().addAll(switchToAdminButton, switchToUserButton);
-
-        // Create a layout for the main content
-        layout = new VBox(10);
-        layout.setPadding(new Insets(10));
-        layout.getChildren().addAll(buttonLayout);
-        layout.setAlignment(Pos.CENTER);
-
-        // Set the layout as the root of the scene
-        Scene scene = new Scene(layout);
-
-        // Set the scene for the primary stage
+        // Create a scene with the tab pane
+        scene = new Scene(tabPane, 800, 600);
+        // Set the scene on the primary stage
         primaryStage.setScene(scene);
-
-        // Show the primary stage
+        // Set the title of the window
+        primaryStage.setTitle("Event Booking System");
+        // Display the primary stage
         primaryStage.show();
     }
 
+    // main method to launch the application
     public static void main(String[] args) {
         launch(args);
-    }
-
-    class SwitchHandler implements EventHandler<ActionEvent> {
-        @Override
-        public void handle(ActionEvent event) {
-            if (event.getSource() == switchToUserButton) {
-                primaryStage.setScene(userScene.getScene());
-                primaryStage.setTitle("Event Booking");
-            } else if (event.getSource() == switchToAdminButton) {
-                primaryStage.setScene(adminScene.getScene());
-                primaryStage.setTitle("Event Management");
-            }
-        }
     }
 }
